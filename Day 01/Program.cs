@@ -12,6 +12,7 @@
 
             ParseInput(rawInput, leftList, rightList);
             Part1(leftList, rightList);
+            Part2(leftList, rightList);
         }
         static void WriteHeader(int day)
         {
@@ -37,7 +38,7 @@
             foreach (var line in rawiInput)
             {
                 var locationIds = line.Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-                
+
                 if (locationIds.Length == 2)
                 {
                     leftList.Add(Int32.Parse(locationIds[0]));
@@ -54,6 +55,7 @@
         {
             Console.WriteLine("~ Part 1 ~");
             Console.WriteLine();
+
             var leftSorted = leftList.Order().ToList();
             var rightSorted = rightList.Order().ToList();
             var totalDistance = 0;
@@ -64,6 +66,26 @@
             }
 
             Console.WriteLine($"Total Distance: {totalDistance}");
+            Console.WriteLine();
+        }
+
+        static void Part2(List<int> leftList, List<int> rightList)
+        {
+            Console.WriteLine("~ Part 2 ~");
+            Console.WriteLine();
+
+            var apperances = new Dictionary<int, int>();
+            var similarityScore = 0;
+
+            for (int i = 0; i < leftList.Count; i++)
+            {
+                if (!apperances.ContainsKey(leftList[i]))
+                    apperances.Add(leftList[i], rightList.Count(x => x == leftList[i]));
+
+                similarityScore += (leftList[i] * apperances[leftList[i]]);
+            }
+
+            Console.WriteLine($"Similarity Score: {similarityScore}");
             Console.WriteLine();
         }
     }
