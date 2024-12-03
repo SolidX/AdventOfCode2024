@@ -10,6 +10,7 @@
             var reports = ParseInput(rawInput);
 
             Part1(reports);
+            Part2(reports);
         }
 
         static void WriteHeader(int day)
@@ -74,9 +75,15 @@
                     return false;
 
                 bool? currTrend;
-                if (diff > 0) currTrend = true;
-                if (diff < 0) currTrend = false;
-                else currTrend = null;
+                if (diff > 0)
+                    currTrend = true; //Increasing
+                else
+                {
+                    if (diff < 0)
+                        currTrend = false; //Decreasing
+                    else
+                        currTrend = null; //Steady
+                }
 
                 if (j == 1)
                     trend = currTrend;
@@ -87,6 +94,50 @@
             }
             
             return true;
+        }       
+
+        static IEnumerable<int[]> GetDampenedReport(int[] report)
+        {
+            for (var i = 0; i < report.Length; i++)
+            {
+                var dampenedReport = new int[report.Length - 1];
+
+                for (var j = 0; j < report.Length; j++)
+                {
+                    if (i == j)
+                        continue;
+                    if (j < i)
+                        dampenedReport[j] = report[j];
+                    else
+                        dampenedReport[j - 1] = report[j];
+                }
+
+                yield return dampenedReport;
+            }
+        }
+
+        static bool IsSafeWithDampening(int[] report)
+        {
+            if (IsSafe(report))
+                return true;
+
+            var dampenedReports = GetDampenedReport(report);
+            return dampenedReports.Any(IsSafe);
+        }
+
+        static void Part2(List<int[]> reports)
+        {
+            Console.WriteLine("~ Part 2 ~");
+            Console.WriteLine();
+
+            var reportSafety = new Dictionary<int, bool>();
+            for (var i = 0; i < reports.Count; i++)
+                reportSafety.Add(i, IsSafeWithDampening(reports[i]));
+
+            var safeReports = reportSafety.Count(x => x.Value);
+
+            Console.WriteLine($"Safe Reports (with dampening): {safeReports}");
+            Console.WriteLine();
         }
     }
 }
