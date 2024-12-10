@@ -6,7 +6,7 @@
         {
             WriteHeader(4);
 
-            var puzzle = LoadInput(); //.ToCharArray();
+            var puzzle = LoadInput();
             Part1(puzzle);
             Part2(puzzle);
         }
