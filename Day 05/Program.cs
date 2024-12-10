@@ -12,6 +12,7 @@
 
             ParseInput(rawInput, orderingRules, updates);
             Part1(orderingRules, updates);
+            Part2(orderingRules, updates);
         }
         static void WriteHeader(int day)
         {
@@ -88,6 +89,57 @@
             {
                 if (InCorrectOrder(orderingRules, u))
                     middlePageSum += u[u.Count / 2];
+            }
+
+            Console.WriteLine($"Sum of correctly-ordered middle page numbers: {middlePageSum}");
+            Console.WriteLine();
+        }
+
+        static List<int> OrderPages(Dictionary<int, HashSet<int>> orderingRules, List<int> update)
+        {
+            if (InCorrectOrder(orderingRules, update))
+                return update;
+
+            for (var i = 0; i < update.Count; i++)
+            {
+                if (orderingRules.ContainsKey(update[i]))
+                {
+                    var mustComeAfter = update.Intersect(orderingRules[update[i]]).ToHashSet();
+                    
+                    if (!mustComeAfter.Any())
+                        continue;
+
+                    var positionToUse = mustComeAfter.Select(pg => update.FindIndex(0, p => p == pg)).Min();
+
+                    if (positionToUse < i)
+                    {
+                        var fixedUpdate = new List<int>();
+                        fixedUpdate.AddRange(update);
+                        fixedUpdate.RemoveAt(i);
+                        fixedUpdate.Insert(positionToUse, update[i]);
+
+                        return OrderPages(orderingRules, fixedUpdate);
+                    }
+                }
+            }
+
+            return new List<int>();
+        }
+
+        static void Part2(Dictionary<int, HashSet<int>> orderingRules, List<List<int>> updates)
+        {
+            Console.WriteLine("~ Part 2 ~");
+            Console.WriteLine();
+
+            var middlePageSum = 0;
+            foreach (var u in updates)
+            {
+                if (!InCorrectOrder(orderingRules, u))
+                {
+                    var fixedUpdate = OrderPages(orderingRules, u);
+                    middlePageSum += fixedUpdate[u.Count / 2];
+                }
+                    
             }
 
             Console.WriteLine($"Sum of correctly-ordered middle page numbers: {middlePageSum}");
