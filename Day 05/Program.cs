@@ -142,7 +142,7 @@
                     
             }
 
-            Console.WriteLine($"Sum of correctly-ordered middle page numbers: {middlePageSum}");
+            Console.WriteLine($"Sum of corrected-order middle page numbers: {middlePageSum}");
             Console.WriteLine();
         }
     }
