@@ -11,6 +11,7 @@ namespace Day_07
             var rawInput = LoadInput();
             var parsedInput = ParseInput(rawInput);
             Part1(parsedInput);
+            Part2(parsedInput);
         }
 
         static void WriteHeader(int day)
@@ -51,6 +52,17 @@ namespace Day_07
             Console.WriteLine();
 
             var total = calibrations.Where(x => x.Passes()).Sum(x => x.TestValue);
+
+            Console.WriteLine($"Total Calibration Result: {total}");
+            Console.WriteLine();
+        }
+
+        static void Part2(List<Equation> calibrations)
+        {
+            Console.WriteLine("~ Part 2 ~");
+            Console.WriteLine();
+
+            var total = calibrations.Where(x => x.PassesWithConcatenation()).Sum(x => x.TestValue);
 
             Console.WriteLine($"Total Calibration Result: {total}");
             Console.WriteLine();

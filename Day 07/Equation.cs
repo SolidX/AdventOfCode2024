@@ -46,7 +46,50 @@
             }
 
             return possiblities.Any(x => x.TestValue == x.Evaluate());
-            //return outcomes.Any(x => x == TestValue);
+        }
+
+        public bool PassesWithConcatenation()
+        {
+            if (Operators.Any())
+                return TestValue == Evaluate();
+
+            var possiblities = new List<Equation>();
+
+            var t = Clone();
+            t.Operators.Add('+');
+            possiblities.Add(t);
+
+            var u = Clone();
+            u.Operators.Add('*');
+            possiblities.Add(u);
+
+            var v = Clone();
+            v.Operators.Add('|');
+            possiblities.Add(v);
+
+            for (var i = 1; i < Operands.Count - 1; i++)
+            {
+                var tmp = new List<Equation>();
+
+                for (int j = 0; j < possiblities.Count; j++)
+                {
+                    var a = possiblities[j].Clone();
+                    a.Operators.Add('+');
+                    tmp.Add(a);
+
+                    var b = possiblities[j].Clone();
+                    b.Operators.Add('*');
+                    tmp.Add(b);
+
+                    var c = possiblities[j].Clone();
+                    c.Operators.Add('|');
+                    tmp.Add(c);
+                }
+
+                possiblities = tmp;
+            }
+
+            return possiblities.Any(x => x.TestValue == x.Evaluate());
         }
 
         public long? Evaluate()
@@ -64,6 +107,9 @@
                         break;
                     case '*':
                         result *= Operands[i + 1];
+                        break;
+                    case '|':
+                        result = Int64.Parse($"{result}{Operands[i + 1]}");
                         break;
                     default:
                         throw new ArgumentException($"Invalid operator: '{Operators[i]}'");
